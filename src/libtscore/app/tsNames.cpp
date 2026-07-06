@@ -808,6 +808,11 @@ ts::NamesPtr ts::Names::AllInstances::getLocked(const UString& section_name, boo
 
 bool ts::Names::AllInstances::loadFileLocked(const UString& file_name)
 {
+#if defined(TS_NO_NAMES_FILES)
+    // Names files are disabled (see CONFIG.txt, NONAMES). Table/descriptor factory
+    // registration does not depend on them, only value-to-name formatting does.
+    return false;
+#else
     // To speed up future lookups, we save in _loaded_files all forms of paths
     // for the file, including the common names without directory.
     if (_loaded_files.contains(file_name)) {
@@ -1012,6 +1017,7 @@ bool ts::Names::AllInstances::loadFileLocked(const UString& file_name)
     }
 
     return error_count == 0;
+#endif // TS_NO_NAMES_FILES
 }
 
 
